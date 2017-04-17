@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.fs</groupId>
-    <artifactId>snake</artifactId>
+    <groupId>com.lyy.snake</groupId>
+    <artifactId>snake-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <developers>
@@ -13,5 +13,8 @@
             <name>kerith</name>
         </developer>
     </developers>
+    <modules>
+        <module>snake-mgt</module>
+    </modules>
 
 </project>
