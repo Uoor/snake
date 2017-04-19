@@ -23,13 +23,11 @@ public class MenuAction {
             List<MenuDetailDTO> menuList = new ArrayList<MenuDetailDTO>();
             MenuDetailDTO projectMenu = new MenuDetailDTO("项目管理","",1);
             List<MenuDetailDTO> projectMenuChild = new ArrayList<MenuDetailDTO>();
-            projectMenuChild.add(new MenuDetailDTO("项目组管理","/projectGroup",2));
+            projectMenuChild.add(new MenuDetailDTO("项目组管理","/project/projectList.htm",2));
             projectMenu.setChildMenu(projectMenuChild);
 
             menuList.add(projectMenu);
             result.setVal("menuList",menuList);
-            result.setCode(AjaxResultCodeEnum.SUCCESS);
-            result.setTipsMsg("处理成功");
         }catch (Exception e){
             result.setCode(AjaxResultCodeEnum.EXCEPTION);
             result.setErrorMsg(e.getMessage());

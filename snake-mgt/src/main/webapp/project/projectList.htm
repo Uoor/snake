@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>平台</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+    <div>
+        项目列表
+    </div>
+    <div>
+        <table id="projectTable">
+            <thead>
+            <tr>
+                <td>
+                    组
+                </td>
+                <td>
+                    项目名称
+                </td>
+                <td>
+                    项目描述
+                </td>
+            </tr>
+            </thead>
+            <tbody id="projectTBody">
+            <!--<tr>-->
+                <!--<td>默认</td>-->
+                <!--<td>snake</td>-->
+                <!--<td>配置中心</td>-->
+            <!--</tr>-->
+            </tbody>
+        </table>
+    </div>
+    <div id="propertyValueBox" style="display: none">
+        <table id="projectConfigTable">
+            <thead>
+            <tr>
+                <td>
+                    配置key
+                </td>
+                <td>
+                    配置描述
+                </td>
+                <td>
+                    配置内容
+                </td>
+                <td>
+                    操作<a href="javascript:void(0);">添加</a>
+                </td>
+            </tr>
+            </thead>
+            <tbody id="projectConfigTbody">
+            <tr>
+                <td>snake.db.url</td>
+                <td>数据库链接</td>
+                <td>192.168.1.1:3306</td>
+                <td><a href="javascript:void(0);">修改</a><a href="javascript:void(0);">删除</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+<script src="/js/jquery.min.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        loadProjectList();
+        $("#queryBtn").click(function(){
+
+        });
+    });
+    var loadProjectList = function(){
+        $.ajax({
+            url:"/snake/projectList",
+            dataType:"json",
+            success:function(data, status){
+                var resultCode = data.code;
+                if(resultCode != 200){
+                    alert(data.tipsMsg);
+                    return;
+                }
+                var tbody = $("#projectTBody");
+                tbody.html("");
+                $.each(data.data.projectList,function(index,project){
+                    var projectTrHtml = "<tr>"+
+                            "<td>"+project.projectGroup+"</td>"+
+                            "<td><a href='javascript:void(0);' onclick='openProjectConfigs(\""+project.projectName+"\")'>"+project.projectName+"</a></td>"+
+                            "<td>"+project.projectDesc+"</td>"+
+                            "</tr>";
+                    tbody.append(projectTrHtml);
+                })
+            },
+            error:function(XMLHttpRequest, textStatus, errorThrown){
+
+            }
+        });
+    }
+    var openProjectConfigs = function(projectName){
+        $("#propertyValueBox").show();
+        var tbody = $("#projectConfigTbody");
+        tbody.html("");
+        $.ajax({
+            url:"/snake/config/project/values",
+            data:{domain:projectName},
+            dataType:"json",
+            success:function(data, status){
+                var resultCode = data.code;
+                if(resultCode != 200){
+                    alert(data.tipsMsg);
+                    return;
+                }
+                $.each(data.data.configList,function(index,config){
+                    var trHtml = "<tr>"+
+                            "<td>"+config.key+"</td>"+
+                            "<td>"+config.desc+"</td>"+
+                            "<td>"+config.val+"</td>"+
+                            "<td><a href='javascript:void(0);' onclick='updateConfigValue(\""+config.key+"\")'>修改</a>&nbsp;<a href='javascript:void(0);'  onclick='deleteConfig(\""+config.key+"\")'>删除</a></td>"+
+                            "</tr>";
+                    tbody.append(trHtml);
+                })
+            },
+            error:function(XMLHttpRequest, textStatus, errorThrown){
+
+            }
+        });
+    }
+    var addConfigValue = function(){
+
+    }
+    var updateConfigValue = function(key){
+
+    }
+    var deleteConfig = function(key){
+
+    }
+</script>
+</html>
