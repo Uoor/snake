@@ -20,13 +20,15 @@ public class MenuAction {
     public AjaxResult getMenuList(){
         AjaxResult result = new AjaxResult();
         try {
-            List<MenuDetailDTO> menuList = new ArrayList<MenuDetailDTO>();
             MenuDetailDTO projectMenu = new MenuDetailDTO("项目管理","",1);
-            List<MenuDetailDTO> projectMenuChild = new ArrayList<MenuDetailDTO>();
-            projectMenuChild.add(new MenuDetailDTO("项目组管理","/project/projectList.htm",2));
-            projectMenu.setChildMenu(projectMenuChild);
+            projectMenu.addChildMenu(new MenuDetailDTO("项目组管理", "/project/projectList.htm", 2));
 
+            MenuDetailDTO configMenu = new MenuDetailDTO("配置中心","",1);
+            configMenu.addChildMenu(new MenuDetailDTO("配置管理", "/project/projectList.htm", 2));
+
+            List<MenuDetailDTO> menuList = new ArrayList<MenuDetailDTO>();
             menuList.add(projectMenu);
+            menuList.add(configMenu);
             result.setVal("menuList",menuList);
         }catch (Exception e){
             result.setCode(AjaxResultCodeEnum.EXCEPTION);

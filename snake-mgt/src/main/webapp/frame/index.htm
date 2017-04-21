@@ -57,7 +57,7 @@ top
                         var firstMenuHtml = "<a href='#oneMenuId_'"+index+" class='nav-header menu-first' data-toggle='collapse'>"+val.menuName+"</a>";
                         var firstMenuChildHtml = "<ul id='oneMenuId_'"+index+" class='nav nav-list  menu-second in collapse ' >";
                         $.each(val.childMenu,function(childIndex,childMenu){
-                            firstMenuChildHtml+="<li><a href='javascript:void(0)' class='menuItem' menuName='"+childMenu.menuName+"' menuId='"+childMenu.menuId+"' menuUrl='"+childMenu.menuUrl+"'>项目列表</a></li>";
+                            firstMenuChildHtml+="<li><a href='javascript:void(0)' class='menuItem' menuName='"+childMenu.menuName+"' menuId='"+childMenu.menuId+"' menuUrl='"+childMenu.menuUrl+"'>"+childMenu.menuName+"</a></li>";
                         });
                         firstMenuChildHtml+="</ul>";
                         menuBox.append(firstMenuHtml);

@@ -1,8 +1,10 @@
 package com.lyy.snake.mgt.dto;
 
+import org.springframework.util.CollectionUtils;
 import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +22,7 @@ public class MenuDetailDTO implements Serializable{
         this.menuUrl=url;
         this.level=level;
     }
-    public List<MenuDetailDTO> childMenu;
+    public List<MenuDetailDTO> childMenu = new ArrayList<MenuDetailDTO>();
 
     public String getMenuId() {
         return menuId;
@@ -51,7 +53,14 @@ public class MenuDetailDTO implements Serializable{
     }
 
     public void setChildMenu(List<MenuDetailDTO> childMenu) {
-        this.childMenu = childMenu;
+        if (CollectionUtils.isEmpty(childMenu)){
+            return;
+        }
+        this.childMenu.addAll(childMenu);
+    }
+
+    public void addChildMenu(MenuDetailDTO childMenu){
+        this.childMenu.add(childMenu);
     }
 
     public int getLevel() {
