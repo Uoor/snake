@@ -54,4 +54,12 @@ public class AjaxResult implements Serializable {
         return data;
     }
 
+    public static AjaxResult getFailResult(AjaxResultCodeEnum code,String errorMsg){
+        AjaxResult result = new AjaxResult();
+        result.setCode(code);
+        result.setErrorMsg(errorMsg);
+        result.setTipsMsg(errorMsg);
+        return result;
+    }
+
 }

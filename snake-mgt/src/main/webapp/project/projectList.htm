@@ -50,7 +50,7 @@
             <thead>
             <tr>
                 <td>
-                    配置key
+                    配置key a
                 </td>
                 <td>
                     配置描述
@@ -88,7 +88,9 @@
     <div id="dialog_updateConfig" style="display: none;line-height: 25px;text-align: center">
         <form id="updateConfigForm" onsubmit="return false;">
             <label style="width: 100px;">key:</label>
-            <input name="key" readonly><br>
+            <input name="key" readonly>
+            <input name="version" type="hidden">
+            <br>
             <label style="width: 100px;">描述:</label>
             <input name="desc" readonly><br>
             <label style="width: 100px;">内容:</label>
@@ -149,11 +151,12 @@
                     return;
                 }
                 $.each(data.data.configList,function(index,config){
+                    var key = config.domain+"."+config.configName;
                     var trHtml = "<tr>"+
-                            "<td>"+config.key+"</td>"+
-                            "<td>"+config.desc+"</td>"+
-                            "<td>"+config.val+"</td>"+
-                            "<td><a href='javascript:void(0);' onclick='updateConfigValue(\""+config.key+"\")'>修改</a>&nbsp;<a href='javascript:void(0);'  onclick='deleteConfig(\""+config.key+"\")'>删除</a></td>"+
+                            "<td>"+key+"</td>"+
+                            "<td>"+config.configDesc+"</td>"+
+                            "<td>"+config.configValue+"</td>"+
+                            "<td><a href='javascript:void(0);' onclick='updateConfigValue(\""+key+"\")'>修改</a>&nbsp;<a href='javascript:void(0);'  onclick='deleteConfig(\""+key+"\")'>删除</a></td>"+
                             "</tr>";
                     tbody.append(trHtml);
                 })
@@ -231,10 +234,9 @@
     var updateConfigValue = function(key){
         $("#updateConfigForm").find("input[name=key]").val(key);
         $.ajax({
-            url:"/snake/config//value/key",
+            url:"/snake/config/value/key",
             data:{key:key},
             method:"post",
-            data:$("#updateConfigForm").serialize(),
             dataType:"json",
             success:function(data, status){
                 var resultCode = data.code;
@@ -243,6 +245,8 @@
                     return;
                 }
                 $("#updateConfigForm").find("textarea[name=value]").val(data.data.configValue);
+                $("#updateConfigForm").find("input[name=desc]").val(data.data.configDesc);
+                $("#updateConfigForm").find("input[name=version]").val(data.data.version);
             },
             error:function(XMLHttpRequest, textStatus, errorThrown){
 

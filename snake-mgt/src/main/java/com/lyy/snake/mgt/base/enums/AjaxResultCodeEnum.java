@@ -5,6 +5,7 @@ package com.lyy.snake.mgt.base.enums;
  */
 public enum  AjaxResultCodeEnum {
     SUCCESS(200,"成功"),
+    FAIL(400,"失败"),
     EXCEPTION(500,"异常"),
     NOTFOUND(404,"资源不存在"),
     ;

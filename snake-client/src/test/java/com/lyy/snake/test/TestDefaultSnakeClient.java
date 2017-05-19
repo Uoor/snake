@@ -1,7 +1,8 @@
 package com.lyy.snake.test;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.lyy.snake.client.DefaultSnakeClient;
+import com.lyy.snake.common.DefaultSnakeClient;
+import com.lyy.snake.customer.SnakeConfigClient;
+import com.lyy.snake.customer.SnakeConfigClientFactory;
 import org.junit.Test;
 
 /**
@@ -11,12 +12,12 @@ public class TestDefaultSnakeClient {
 
     @Test
     public void test(){
-        DefaultSnakeClient c = new DefaultSnakeClient();
+        SnakeConfigClient c = SnakeConfigClientFactory.getDefaultSnakeConfigClient();
         for (int i = 0;i<10000;i++){
-            System.out.println(c.getConfig("demo","sdfa"));
-            System.out.println(c.getConfig("demo","11"));
-            System.out.println(c.getConfig("demo","22"));
-            System.out.println(c.getConfig("demo","33"));
+            System.out.println(c.getConfigValue("demo", "1"));
+            System.out.println(c.getConfigValue("demo", "2"));
+            System.out.println(c.getConfigValue("demo", "3"));
+            System.out.println(c.getConfigValue("demo","4"));
             try {
                 Thread.sleep(3000l);
             } catch (InterruptedException e) {
@@ -25,4 +26,8 @@ public class TestDefaultSnakeClient {
         }
 
     }
+
+
+
+
 }

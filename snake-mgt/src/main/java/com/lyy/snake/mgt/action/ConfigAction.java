@@ -1,8 +1,8 @@
 package com.lyy.snake.mgt.action;
 
-import com.alibaba.fastjson.JSON;
-import com.lyy.snake.core.client.ConfigManager;
-import com.lyy.snake.core.dto.ConfigDTO;
+import com.lyy.snake.common.dto.SnakeConfigInfoDTO;
+import com.lyy.snake.common.utils.PatternUtil;
+import com.lyy.snake.manager.SnakeMamagerFactory;
 import com.lyy.snake.mgt.base.enums.AjaxResultCodeEnum;
 import com.lyy.snake.mgt.base.vo.AjaxResult;
 import org.springframework.stereotype.Controller;
@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by fanshuai on 17/4/18.
@@ -20,15 +18,33 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/snake/config")
 public class ConfigAction {
-
-
+    String domainPattern = "^[a-zA-Z]{1}[a-zA-Z0-9\\-]*$";
+    String configNamePattern = "^[a-zA-Z0-9]{1}[a-zA-Z0-9\\.\\-]*$";
+    String fullKeyPattern ="^[a-zA-Z]{1}[a-zA-Z0-9\\-]*\\.[a-zA-Z0-9]{1}[a-zA-Z0-9\\.\\-]*$";
     @RequestMapping(value = "/value/key")
     @ResponseBody
     public AjaxResult getConfigByKey(String key){
         AjaxResult result = new AjaxResult();
         try {
-            String value = ConfigManager.getDefaultInstance().getConfigValue(key);
-            result.setVal("configValue", value);
+            if (PatternUtil.isNotMatchs(key, fullKeyPattern)){
+                return AjaxResult.getFailResult(AjaxResultCodeEnum.FAIL,key+"不符合规范");
+            }
+            int firstPointIndex = key.indexOf('.');
+            if (firstPointIndex==-1){
+                return AjaxResult.getFailResult(AjaxResultCodeEnum.FAIL,key+"不符合规范");
+            }
+            if (firstPointIndex==key.length()-1){
+                return AjaxResult.getFailResult(AjaxResultCodeEnum.FAIL,key+"不符合规范");
+            }
+            String domain = key.substring(0, firstPointIndex);
+            String configName = key.substring(firstPointIndex+1,key.length());
+            SnakeConfigInfoDTO snakeConfigInfoDTO = new SnakeConfigInfoDTO();
+            snakeConfigInfoDTO.setDomain(domain);
+            snakeConfigInfoDTO.setConfigName(configName);
+            SnakeConfigInfoDTO valueDto = SnakeMamagerFactory.getDefaultSnakeManager().getConfigInfo(snakeConfigInfoDTO);
+            result.setVal("configValue", valueDto.getConfigValue());
+            result.setVal("version",valueDto.getVersion());
+            result.setVal("configDesc",valueDto.getConfigDesc());
         }catch (Exception e){
             result.setCode(AjaxResultCodeEnum.EXCEPTION);
             result.setErrorMsg(e.getMessage());
@@ -42,15 +58,11 @@ public class ConfigAction {
     public AjaxResult getAllProjectConfig(String domain){
         AjaxResult result = new AjaxResult();
         try {
-            Map<String,String> configValueMap = ConfigManager.getDefaultInstance().getDomainConfigValues(domain);
-            List<ConfigDTO> configList = new ArrayList<ConfigDTO>();
-            for (Map.Entry<String,String> entry:configValueMap.entrySet()){
-                ConfigDTO config = new ConfigDTO();
-                config.setKey(entry.getKey());
-                config.setVal(entry.getValue());
-                configList.add(config);
+            if (PatternUtil.isNotMatchs(domain, domainPattern)){
+                return AjaxResult.getFailResult(AjaxResultCodeEnum.FAIL,domain+"不符合规范");
             }
-            result.setVal("configList", configList);
+            List<SnakeConfigInfoDTO> snakeConfigInfoDTOList = SnakeMamagerFactory.getDefaultSnakeManager().getConfigItems(domain,0,1000);
+            result.setVal("configList", snakeConfigInfoDTOList);
         }catch (Exception e){
             result.setCode(AjaxResultCodeEnum.EXCEPTION);
             result.setErrorMsg(e.getMessage());
@@ -61,10 +73,28 @@ public class ConfigAction {
 
     @RequestMapping(value = "/value/update",method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult updateConfigValue(String key,String value){
+    public AjaxResult updateConfigValue(String key,String value,String desc,Integer version){
         AjaxResult result = new AjaxResult();
         try {
-            boolean updateSuccess = ConfigManager.getDefaultInstance().setConfigValues(key, value);
+            if (PatternUtil.isNotMatchs(key, fullKeyPattern)){
+                return AjaxResult.getFailResult(AjaxResultCodeEnum.FAIL,key+"不符合规范");
+            }
+            int firstPointIndex = key.indexOf('.');
+            if (firstPointIndex==-1){
+                return AjaxResult.getFailResult(AjaxResultCodeEnum.FAIL,key+"不符合规范");
+            }
+            if (firstPointIndex==key.length()-1){
+                return AjaxResult.getFailResult(AjaxResultCodeEnum.FAIL,key+"不符合规范");
+            }
+            String domain = key.substring(0, firstPointIndex);
+            String configName = key.substring(firstPointIndex+1,key.length());
+            SnakeConfigInfoDTO snakeConfigInfoDTO = new SnakeConfigInfoDTO();
+            snakeConfigInfoDTO.setDomain(domain);
+            snakeConfigInfoDTO.setConfigName(configName);
+            snakeConfigInfoDTO.setConfigValue(value);
+            snakeConfigInfoDTO.setConfigDesc(desc);
+            snakeConfigInfoDTO.setVersion(version==null?0:version);
+            boolean updateSuccess = SnakeMamagerFactory.getDefaultSnakeManager().setConfigValue(snakeConfigInfoDTO);
             result.setVal("updateSuccess", updateSuccess);
         }catch (Exception e){
             result.setCode(AjaxResultCodeEnum.EXCEPTION);
@@ -79,7 +109,22 @@ public class ConfigAction {
     public AjaxResult deleteConfig(String key){
         AjaxResult result = new AjaxResult();
         try {
-            boolean updateSuccess = ConfigManager.getDefaultInstance().deleteConfig(key);
+            if (PatternUtil.isNotMatchs(key, fullKeyPattern)){
+                return AjaxResult.getFailResult(AjaxResultCodeEnum.FAIL,key+"不符合规范");
+            }
+            int firstPointIndex = key.indexOf('.');
+            if (firstPointIndex==-1){
+                return AjaxResult.getFailResult(AjaxResultCodeEnum.FAIL,key+"不符合规范");
+            }
+            if (firstPointIndex==key.length()-1){
+                return AjaxResult.getFailResult(AjaxResultCodeEnum.FAIL,key+"不符合规范");
+            }
+            String domain = key.substring(0, firstPointIndex);
+            String configName = key.substring(firstPointIndex+1,key.length());
+            SnakeConfigInfoDTO snakeConfigInfoDTO = new SnakeConfigInfoDTO();
+            snakeConfigInfoDTO.setDomain(domain);
+            snakeConfigInfoDTO.setConfigName(configName);
+            boolean updateSuccess = SnakeMamagerFactory.getDefaultSnakeManager().deleteConfigItem(snakeConfigInfoDTO);
             result.setVal("updateSuccess", updateSuccess);
         }catch (Exception e){
             result.setCode(AjaxResultCodeEnum.EXCEPTION);

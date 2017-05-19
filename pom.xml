@@ -17,6 +17,7 @@
         <module>snake-mgt</module>
         <module>snake-core</module>
         <module>snake-client</module>
+        <module>snake-common</module>
     </modules>
 
 </project>
