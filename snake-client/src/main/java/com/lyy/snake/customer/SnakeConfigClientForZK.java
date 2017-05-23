@@ -1,5 +1,6 @@
 package com.lyy.snake.customer;
 
+import com.google.common.base.Strings;
 import com.lyy.snake.common.data.SnakeDataCache;
 import com.lyy.snake.common.dto.SnakeConfigInfoDTO;
 import com.lyy.snake.common.serial.HessianSerial;
@@ -42,6 +43,24 @@ public class SnakeConfigClientForZK implements SnakeConfigClient{
             return null;
         }
     }
+
+    @Override
+    public String getConfigValue(String configValueFullKey) {
+        if (Strings.isNullOrEmpty(configValueFullKey)){
+            return null;
+        }
+        int pointIndex = configValueFullKey.indexOf(".");
+        if (pointIndex==-1){
+            return null;
+        }
+        if (pointIndex==configValueFullKey.length()-1){
+            return null;
+        }
+        String domain = configValueFullKey.substring(0,pointIndex);
+        String configName = configValueFullKey.substring(pointIndex+1,configValueFullKey.length());
+        return getConfigValue(domain,configName);
+    }
+
     private SnakeConfigInfoDTO getValueFromRemoteZK(String domain, String configName) throws Exception {
         SnakeConfigInfoDTO cacheValue = new SnakeConfigInfoDTO();
         cacheValue.setDomain(domain);

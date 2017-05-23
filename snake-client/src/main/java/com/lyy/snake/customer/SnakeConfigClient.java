@@ -6,4 +6,6 @@ package com.lyy.snake.customer;
 public interface SnakeConfigClient {
 
     String getConfigValue(String domain,String configName);
+
+    String getConfigValue(String configValueFullKey);
 }

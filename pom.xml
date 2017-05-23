@@ -18,6 +18,8 @@
         <module>snake-core</module>
         <module>snake-client</module>
         <module>snake-common</module>
+        <module>snake-spring</module>
+        <module>snake-example</module>
     </modules>
 
 </project>
