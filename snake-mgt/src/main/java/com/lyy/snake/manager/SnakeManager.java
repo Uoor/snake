@@ -38,4 +38,6 @@ public interface SnakeManager {
      * @return
      */
     boolean deleteConfigItem(SnakeConfigInfoDTO snakeConfigInfo) throws Exception;
+
+
 }
